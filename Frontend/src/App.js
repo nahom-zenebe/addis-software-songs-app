@@ -3,17 +3,20 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './pages/Homepage';     
 import NotFound from './pages/NotFound';      
 import  Welcomepage from './pages/Welcomepage'
+import PostSongs from './pages/PostSongs'
+import { ToastContainer } from 'react-toastify';
 function App() {
   return (
     <Router>
-  <Link to={'/Homepage'}>elcome</Link>
+
   <Routes>
   <Route path="/" element={<Welcomepage />} />
   <Route path="/Homepage" element={< HomePage/>} />
+  <Route path='/createsongs' element={<PostSongs/>}/>
   <Route path="*" element={<NotFound />} />
-  
-</Routes>
 
+</Routes>
+<ToastContainer position="top-right" autoClose={3000} />
 
     </Router>
   );
