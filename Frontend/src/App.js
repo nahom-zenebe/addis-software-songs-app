@@ -1,10 +1,21 @@
 import React from 'react';
-
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import HomePage from './pages/Homepage';     
+import NotFound from './pages/NotFound';      
+import  Welcomepage from './pages/Welcomepage'
 function App() {
   return (
-    <div>
-      <h1>Welcome to Addis Songs Manager</h1>
-    </div>
+    <Router>
+  <Link to={'/Homepage'}>elcome</Link>
+  <Routes>
+  <Route path="/" element={<Welcomepage />} />
+  <Route path="/Homepage" element={< HomePage/>} />
+  <Route path="*" element={<NotFound />} />
+  
+</Routes>
+
+
+    </Router>
   );
 }
 

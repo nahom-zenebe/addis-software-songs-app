@@ -5,31 +5,32 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: 'bundle.[contenthash].js',  // cache busting
+    filename: 'bundle.[contenthash].js',  
     path: path.resolve(__dirname, 'dist'),
-    clean: true, // clean old files
+    clean: true, 
   },
-  mode: 'development', // change to 'production' for build
-  devtool: 'inline-source-map', // for easier debugging
+  mode: 'development', 
+  devtool: 'inline-source-map', 
   devServer: {
     static: './dist',
-    port: 3000,
+    port: 3001,
     hot: true,
     open: true,
+    historyApiFallback: true,
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/, // Transpile JS and JSX files
+        test: /\.(js|jsx)$/, 
         exclude: /node_modules/,
         use: 'babel-loader',
       },
       {
-        test: /\.css$/, // Allow importing CSS
+        test: /\.css$/, 
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i, // Support images (bonus)
+        test: /\.(png|svg|jpg|jpeg|gif)$/i, 
         type: 'asset/resource',
       },
     ],
