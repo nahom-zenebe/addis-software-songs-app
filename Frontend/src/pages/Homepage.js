@@ -1,117 +1,257 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSongsRequest,deleteSongRequest,createSongRequest , updateSongRequest} from '../../features/songs/songsSlice';
-import { css, keyframes } from '@emotion/react';
-import { FaEye, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { fetchSongsRequest, deleteSongRequest, updateSongRequest } from '../../features/songs/songsSlice';
+import { css, keyframes, useTheme } from '@emotion/react';
+import { 
+  FaEye, FaEdit, FaTrash, FaPlus, FaSearch, 
+  FaMusic, FaUser, FaCompactDisc, FaCalendarAlt,
+  FaHeadphones, FaImage, FaTimes, FaSave
+} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+// Theme definition
+const theme = {
+  colors: {
+    primary: '#6366f1',
+    primaryDark: '#4f46e5',
+    primaryDarker: '#4338ca',
+    secondary: '#f59e0b',
+    light: '#f8fafc',
+    dark: '#1e293b',
+    gray: '#64748b',
+    lightGray: '#e2e8f0',
+    danger: '#ef4444',
+    success: '#10b981'
+  },
+  fonts: {
+    main: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    heading: "'Poppins', sans-serif"
+  },
+  shadows: {
+    sm: '0 1px 3px rgba(0,0,0,0.12)',
+    md: '0 4px 6px rgba(0,0,0,0.1)',
+    lg: '0 10px 15px rgba(0,0,0,0.1)',
+    xl: '0 20px 25px rgba(0,0,0,0.1)',
+    primary: '0 4px 20px rgba(99, 102, 241, 0.3)'
+  },
+  radii: {
+    sm: '4px',
+    md: '8px',
+    lg: '12px',
+    xl: '16px'
+  },
+  breakpoints: {
+    sm: '576px',
+    md: '768px',
+    lg: '992px',
+    xl: '1200px'
+  }
+};
+
+// Base styles
+const globalStyles = css`
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #f1f5f9;
+    color: ${theme.colors.dark};
+    font-family: ${theme.fonts.main};
+    line-height: 1.5;
+  }
+`;
+
 const container = css`
-  max-width: 960px;
-  margin: 3rem auto;
-  padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-radius: ${theme.radii.lg};
+  box-shadow: ${theme.shadows.md};
+
+  @media (min-width: ${theme.breakpoints.md}) {
+    padding: 2rem;
+    margin: 3rem auto;
+  }
 `;
 
 const heading = css`
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #222;
+  color: ${theme.colors.primaryDark};
+  font-family: ${theme.fonts.heading};
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  @media (min-width: ${theme.breakpoints.md}) {
+    font-size: 2.5rem;
+  }
+`;
+
+const searchContainer = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (min-width: ${theme.breakpoints.md}) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
+const searchInput = (theme) => css`
+  flex-grow: 1;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: ${theme.radii.md};
+  border: 1px solid ${theme.colors.lightGray};
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: ${theme.colors.light};
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364768b' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 1rem center;
+  background-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+
+  @media (min-width: ${theme.breakpoints.md}) {
+    max-width: 400px;
+    margin-right: auto;
+  }
 `;
 
 const list = css`
   list-style-type: none;
   padding: 0;
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
 `;
 
-const card = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f3f4f6;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  transition: all 0.25s ease;
+const card = (theme) => css`
+  background: #fff;
+  padding: 1.25rem;
+  border-radius: ${theme.radii.md};
+  box-shadow: ${theme.shadows.sm};
+  transition: all 0.3s ease;
+  border-left: 4px solid ${theme.colors.primary};
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background: #e0e7ff;
-    box-shadow: 0 6px 18px rgba(99,102,241,0.2);
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.lg};
+    border-left-color: ${theme.colors.secondary};
   }
 `;
 
-const info = css`
-  flex-grow: 1;
+const cardHeader = css`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+`;
 
-  strong {
-    display: block;
-    font-size: 1.2rem;
-    color: #111827;
-  }
+const songTitle = (theme) => css`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: ${theme.colors.dark};
+  margin-right: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
 
-  em {
-    color: #4b5563;
-    font-style: normal;
-    font-weight: 500;
-  }
+const songDetails = (theme) => css`
+  color: ${theme.colors.gray};
+  font-size: 0.875rem;
+  display: grid;
+  gap: 0.5rem;
+`;
+
+const detailItem = css`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const actions = css`
   display: flex;
-  gap: 0.75rem;
-
-  button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    font-size: 1.2rem;
-    color: #4b5563;
-    transition: color 0.2s;
-
-    &:hover {
-      color: #6366f1;
-    }
-
-    &:active {
-      color: #4338ca;
-    }
-  }
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #e2e8f0;
 `;
 
-const statusMessage = css`
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  margin-top: 2rem;
-`;
-
-const button = css`
+const actionButton = (theme, variant = 'primary') => css`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  margin: 1rem auto 0;
-  padding: 10px 24px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  background-color: #6366f1;
-  color: white;
+  padding: 0.5rem;
+  border-radius: ${theme.radii.sm};
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: ${variant === 'danger' ? theme.colors.danger : theme.colors.primaryDark};
+  background-color: ${variant === 'danger' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(99, 102, 241, 0.1)'};
 
   &:hover {
-    background-color: #4f46e5;
+    background-color: ${variant === 'danger' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(99, 102, 241, 0.2)'};
+    color: ${variant === 'danger' ? theme.colors.danger : theme.colors.primaryDarker};
   }
 
   &:active {
-    background-color: #4338ca;
+    transform: scale(0.95);
+  }
+`;
+
+const primaryButton = (theme) => css`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: ${theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: ${theme.radii.md};
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: ${theme.shadows.sm};
+
+  &:hover {
+    background-color: ${theme.colors.primaryDark};
+    box-shadow: ${theme.shadows.primary};
+  }
+
+  &:active {
+    background-color: ${theme.colors.primaryDarker};
+    transform: translateY(1px);
   }
 `;
 
@@ -122,30 +262,200 @@ const spin = keyframes`
 
 const spinner = css`
   margin: 40px auto;
-  border: 6px solid #e0e7ff;
-  border-top: 6px solid #6366f1;
+  border: 4px solid rgba(99, 102, 241, 0.1);
+  border-top: 4px solid ${theme.colors.primary};
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   animation: ${spin} 1s linear infinite;
+`;
+
+const statusMessage = (theme) => css`
+  text-align: center;
+  font-size: 1.1rem;
+  color: ${theme.colors.gray};
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: ${theme.colors.light};
+  border-radius: ${theme.radii.md};
+`;
+
+const modalOverlay = css`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+`;
+
+const modalContent = (theme) => css`
+  background: #fff;
+  padding: 2rem;
+  border-radius: ${theme.radii.lg};
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: ${theme.shadows.xl};
+  animation: fadeIn 0.3s ease-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
+const modalHeader = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
+const modalTitle = css`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: ${theme.colors.primaryDark};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const closeButton = (theme) => css`
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: ${theme.colors.gray};
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${theme.colors.danger};
+  }
+`;
+
+const formGroup = css`
+  margin-bottom: 1rem;
+`;
+
+const formLabel = (theme) => css`
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: ${theme.colors.dark};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const formInput = (theme) => css`
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid ${theme.colors.lightGray};
+  border-radius: ${theme.radii.sm};
+  font-size: 1rem;
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+`;
+
+const formActions = css`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+`;
+
+const submitButton = (theme) => css`
+  padding: 0.75rem 1.5rem;
+  background-color: ${theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: ${theme.radii.md};
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${theme.colors.primaryDark};
+  }
+`;
+
+const cancelButton = (theme) => css`
+  padding: 0.75rem 1.5rem;
+  background-color: ${theme.colors.lightGray};
+  color: ${theme.colors.dark};
+  border: none;
+  border-radius: ${theme.radii.md};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #d1d5db;
+  }
+`;
+
+const emptyState = (theme) => css`
+  text-align: center;
+  padding: 3rem;
+  background-color: ${theme.colors.light};
+  border-radius: ${theme.radii.md};
+  margin: 2rem 0;
+
+  svg {
+    font-size: 3rem;
+    color: ${theme.colors.primary};
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: ${theme.colors.dark};
+  }
+
+  p {
+    color: ${theme.colors.gray};
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { items, status, error } = useSelector((state) => state.songs);
+  const { items = [], status, error } = useSelector((state) => state.songs || {});
   const navigate = useNavigate();
+  const theme = useTheme();
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editSong, setEditSong] = useState(null);
-  const [editForm, setEditForm] = useState({ title: '', artist: '', album: '', year: '', genre: '', coverUrl: '' });
+  const [editForm, setEditForm] = useState({ 
+    title: '', 
+    artist: '', 
+    album: '', 
+    year: '', 
+    genre: '', 
+    coverUrl: '' 
+  });
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(fetchSongsRequest());
   }, [dispatch]);
 
-  // Filtered songs
   const filteredItems = items.filter(song => {
     const q = search.toLowerCase();
     return (
@@ -191,7 +501,7 @@ const HomePage = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/detail/${id}`);
+    navigate(`/songs/${id}`);
   };
 
   const handleDelete = async (id) => {
@@ -208,7 +518,7 @@ const HomePage = () => {
     return (
       <div css={container}>
         <div css={spinner} />
-        <p css={statusMessage}>Loading songs...</p>
+        <p css={statusMessage}>Loading your music library...</p>
       </div>
     );
   }
@@ -217,7 +527,7 @@ const HomePage = () => {
     return (
       <div css={container}>
         <p css={statusMessage}>Error loading songs: {error}</p>
-        <button css={button} onClick={handleRetry}>
+        <button css={primaryButton} onClick={handleRetry}>
           Retry
         </button>
       </div>
@@ -225,92 +535,164 @@ const HomePage = () => {
   }
 
   return (
-    <div css={container}>
-      <h1 css={heading}>🎶 Song Library</h1>
-      <input
-        type="text"
-        placeholder="Search by title, artist, or album..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        style={{
-          width: '100%',
-          maxWidth: 400,
-          margin: '0 auto 1.5rem',
-          display: 'block',
-          padding: 12,
-          borderRadius: 8,
-          border: '1px solid #e0e7ff',
-          fontSize: '1.1rem',
-        }}
-      />
-      <button css={button} onClick={() => navigate('/createsongs')}>
-        <FaPlus /> Add Song
-      </button>
+    <div css={globalStyles}>
+      <div css={container}>
+        <h1 css={heading}>
+          <FaMusic /> Song Library
+        </h1>
 
-      {/* Edit Modal */}
-      {isModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <form onSubmit={handleEditSubmit} style={{ background: '#fff', padding: 32, borderRadius: 12, minWidth: 320, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
-            <h2 style={{ marginBottom: 16 }}>Edit Song</h2>
-            <div style={{ marginBottom: 12 }}>
-              <label>Title</label>
-              <input name="title" value={editForm.title} onChange={handleEditFormChange} style={{ width: '100%' }} required />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Artist</label>
-              <input name="artist" value={editForm.artist} onChange={handleEditFormChange} style={{ width: '100%' }} required />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Album</label>
-              <input name="album" value={editForm.album} onChange={handleEditFormChange} style={{ width: '100%' }} />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Year</label>
-              <input name="year" value={editForm.year} onChange={handleEditFormChange} style={{ width: '100%' }} />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Genre</label>
-              <input name="genre" value={editForm.genre} onChange={handleEditFormChange} style={{ width: '100%' }} />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Cover URL</label>
-              <input name="coverUrl" value={editForm.coverUrl} onChange={handleEditFormChange} style={{ width: '100%' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-              <button type="submit" style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}>Save</button>
-              <button type="button" onClick={handleModalClose} style={{ background: '#eee', color: '#222', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
-            </div>
-          </form>
+        <div css={searchContainer}>
+          <div css={{ position: 'relative', width: '100%' }}>
+            <FaSearch css={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: theme.colors.gray
+            }} />
+            <input
+              type="text"
+              placeholder="Search by title, artist, or album..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              css={searchInput}
+            />
+          </div>
+          <button css={primaryButton} onClick={() => navigate('/songs/create')}>
+            <FaPlus /> Add New Song
+          </button>
         </div>
-      )}
 
-      {filteredItems.length === 0 ? (
-        <p css={statusMessage}>No songs available.</p>
-      ) : (
-        <ul css={list}>
-          {filteredItems.map((song) => (
-            <li key={song._id || song.id} css={card}>
-              <div css={info}>
-                <strong>{song.title}</strong>
-                <em>{song.artist} • {song.album || "Unknown Album"} • {song.year || "Year N/A"}</em>
-              </div>
-              <div css={actions}>
-                <button onClick={() => handleView(song.id || song._id)} title="View Details">
-                  <FaEye />
-                </button>
-                <button onClick={() => handleEditClick(song)} title="Edit Song">
-                  <FaEdit />
-                </button>
-                <button onClick={() => handleDelete(song.id || song._id)} title="Delete Song">
-                  <FaTrash />
+        {isModalOpen && (
+          <div css={modalOverlay}>
+            <div css={modalContent}>
+              <div css={modalHeader}>
+                <h2 css={modalTitle}><FaEdit /> Edit Song</h2>
+                <button css={closeButton} onClick={handleModalClose}>
+                  <FaTimes />
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              <form onSubmit={handleEditSubmit}>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaMusic /> Title</label>
+                  <input 
+                    name="title" 
+                    value={editForm.title} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                    required 
+                  />
+                </div>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaUser /> Artist</label>
+                  <input 
+                    name="artist" 
+                    value={editForm.artist} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                    required 
+                  />
+                </div>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaCompactDisc /> Album</label>
+                  <input 
+                    name="album" 
+                    value={editForm.album} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                  />
+                </div>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaCalendarAlt /> Year</label>
+                  <input 
+                    name="year" 
+                    value={editForm.year} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                    type="number"
+                  />
+                </div>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaHeadphones /> Genre</label>
+                  <input 
+                    name="genre" 
+                    value={editForm.genre} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                  />
+                </div>
+                <div css={formGroup}>
+                  <label css={formLabel}><FaImage /> Cover URL</label>
+                  <input 
+                    name="coverUrl" 
+                    value={editForm.coverUrl} 
+                    onChange={handleEditFormChange} 
+                    css={formInput} 
+                  />
+                </div>
+                <div css={formActions}>
+                  <button type="button" css={cancelButton} onClick={handleModalClose}>
+                    Cancel
+                  </button>
+                  <button type="submit" css={submitButton}>
+                    <FaSave /> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {filteredItems.length === 0 ? (
+          <div css={emptyState}>
+            <FaMusic />
+            <h3>No Songs Found</h3>
+            <p>Try adding a new song or adjusting your search</p>
+            <button css={primaryButton} onClick={() => navigate('/createsongs')}>
+              <FaPlus /> Add Your First Song
+            </button>
+          </div>
+        ) : (
+          <ul css={list}>
+            {filteredItems.map((song) => (
+              <li key={song._id || song.id} css={card}>
+                <div css={cardHeader}>
+                  <h3 css={songTitle}>{song.title}</h3>
+                </div>
+                <div css={songDetails}>
+                  <div css={detailItem}><FaUser /> {song.artist || 'Unknown Artist'}</div>
+                  <div css={detailItem}><FaCompactDisc /> {song.album || 'No Album'}</div>
+                  {song.year && <div css={detailItem}><FaCalendarAlt /> {song.year}</div>}
+                  {song.genre && <div css={detailItem}><FaHeadphones /> {song.genre}</div>}
+                </div>
+                <div css={actions}>
+                  <button 
+                    css={actionButton} 
+                    onClick={() => handleView(song.id || song._id)} 
+                    title="View Details"
+                  >
+                    <FaEye /> View
+                  </button>
+                  <button 
+                    css={actionButton} 
+                    onClick={() => handleEditClick(song)} 
+                    title="Edit Song"
+                  >
+                    <FaEdit /> Edit
+                  </button>
+                  <button 
+                    css={actionButton(theme, 'danger')} 
+                    onClick={() => handleDelete(song.id || song._id)} 
+                    title="Delete Song"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
