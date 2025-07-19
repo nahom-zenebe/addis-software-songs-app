@@ -180,8 +180,7 @@ const HomePage = () => {
   };
 
   const handleView = (id) => {
-    console.log(`View song ${id}`);
-
+    navigate(`/detail/${id}`);
   };
 
   const handleDelete = async (id) => {
