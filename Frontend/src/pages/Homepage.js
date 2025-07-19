@@ -139,10 +139,21 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editSong, setEditSong] = useState(null);
   const [editForm, setEditForm] = useState({ title: '', artist: '', album: '', year: '', genre: '', coverUrl: '' });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(fetchSongsRequest());
   }, [dispatch]);
+
+  // Filtered songs
+  const filteredItems = items.filter(song => {
+    const q = search.toLowerCase();
+    return (
+      song.title?.toLowerCase().includes(q) ||
+      song.artist?.toLowerCase().includes(q) ||
+      song.album?.toLowerCase().includes(q)
+    );
+  });
 
   const handleEditClick = (song) => {
     setEditSong(song);
@@ -216,6 +227,22 @@ const HomePage = () => {
   return (
     <div css={container}>
       <h1 css={heading}>🎶 Song Library</h1>
+      <input
+        type="text"
+        placeholder="Search by title, artist, or album..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        style={{
+          width: '100%',
+          maxWidth: 400,
+          margin: '0 auto 1.5rem',
+          display: 'block',
+          padding: 12,
+          borderRadius: 8,
+          border: '1px solid #e0e7ff',
+          fontSize: '1.1rem',
+        }}
+      />
       <button css={button} onClick={() => navigate('/createsongs')}>
         <FaPlus /> Add Song
       </button>
@@ -259,11 +286,11 @@ const HomePage = () => {
         </div>
       )}
 
-      {items.length === 0 ? (
+      {filteredItems.length === 0 ? (
         <p css={statusMessage}>No songs available.</p>
       ) : (
         <ul css={list}>
-          {items.map((song) => (
+          {filteredItems.map((song) => (
             <li key={song._id || song.id} css={card}>
               <div css={info}>
                 <strong>{song.title}</strong>
