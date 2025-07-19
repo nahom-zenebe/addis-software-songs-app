@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/Homepage';     
-import  NotFound from './pages/NotFound';      
-import WelcomePage from './pages/Welcomepage';
-import  PostSongs from './pages/PostSongs';
-import DetailPage from './pages/DetailPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingSpinner from './component/LoadingSpinner'; 
+
+
+const WelcomePage = lazy(() => import('./pages/Welcomepage'));
+const HomePage = lazy(() => import('./pages/Homepage'));
+const PostSongs = lazy(() => import('./pages/PostSongs'));
+const DetailPage = lazy(() => import('./pages/DetailPage'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/songs" element={<HomePage />} />
-        <Route path="/songs/create" element={< PostSongs/>} />
-        <Route path="/songs/:id" element={<DetailPage />} />
-        <Route path="/songs/:id/edit" element={< PostSongs />} />
-        <Route path="*" element={< NotFound />} />
-      </Routes>
+
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="/songs" element={<HomePage />} />
+          <Route path="/songs/create" element={<PostSongs />} />
+          <Route path="/songs/:id" element={<DetailPage />} />
+          <Route path="/songs/:id/edit" element={<PostSongs />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
       <ToastContainer 
         position="top-right"
         autoClose={3000}

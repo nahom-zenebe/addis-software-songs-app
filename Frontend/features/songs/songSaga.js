@@ -41,12 +41,12 @@ function* createSongSaga(action) {
 function* updateSongSaga(action) {
   try {
     const { id, songData } = action.payload;
-    yield call(
+    const res = yield call(
       axios.put,
       `${process.env.REACT_APP_BACKEND_URL}/songs/${id}`,
       songData
     );
-    yield put(updateSongSuccess({ id, songData }));
+    yield put(updateSongSuccess(res.data));
   } catch (error) {
     yield put(updateSongFailure(error.response?.data || error.message));
   }
