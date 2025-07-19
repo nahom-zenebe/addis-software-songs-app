@@ -13,12 +13,14 @@ import {
   deleteSongRequest,
   deleteSongSuccess,
   deleteSongFailure,
-} from './songsSlice';
+} from './songSlice';
 
 function* fetchSongsSaga() {
   try {
-    const res = yield call(axios.get, `${process.env.REACT_APP_BACKEND_URL}/songs`);
-    yield put(fetchSongsSuccess(res.data)); 
+    const res = yield call(axios.get, `${process.env.Backend_Url}/songs`, {
+      withCredentials: true,
+    });
+    yield put(fetchSongsSuccess(res.data));
   } catch (error) {
     yield put(fetchSongsFailure(error.response?.data || error.message));
   }
@@ -28,11 +30,11 @@ function* createSongSaga(action) {
   try {
     const res = yield call(
       axios.post,
-      `${process.env.REACT_APP_BACKEND_URL}/songs`,
-      action.payload
+      `${process.env.Backend_Url}/songs`,
+      action.payload,
+      { withCredentials: true }
     );
-    const newSong = res.data[res.data.length - 1];
-    yield put(createSongSuccess(newSong));
+    yield put(createSongSuccess(res.data));
   } catch (error) {
     yield put(createSongFailure(error.response?.data || error.message));
   }
@@ -41,12 +43,13 @@ function* createSongSaga(action) {
 function* updateSongSaga(action) {
   try {
     const { id, songData } = action.payload;
-    yield call(
+    const res = yield call(
       axios.put,
-      `${process.env.REACT_APP_BACKEND_URL}/songs/${id}`,
-      songData
+      `${process.env.Backend_Url}/songs/${id}`,
+      songData,
+      { withCredentials: true }
     );
-    yield put(updateSongSuccess({ id, songData }));
+    yield put(updateSongSuccess(res.data));
   } catch (error) {
     yield put(updateSongFailure(error.response?.data || error.message));
   }
@@ -54,12 +57,12 @@ function* updateSongSaga(action) {
 
 function* deleteSongSaga(action) {
   try {
-    const id = action.payload;
     yield call(
       axios.delete,
-      `${process.env.REACT_APP_BACKEND_URL}/songs/${id}`
+      `${process.env.Backend_Url}/songs/${action.payload}`,
+      { withCredentials: true }
     );
-    yield put(deleteSongSuccess(id));
+    yield put(deleteSongSuccess(action.payload));
   } catch (error) {
     yield put(deleteSongFailure(error.response?.data || error.message));
   }

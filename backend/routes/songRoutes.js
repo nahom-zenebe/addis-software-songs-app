@@ -4,10 +4,10 @@ const controller = require("../controller/songController");
 
 
 
-router.get('/getsongs',controller.getSongs)
-router.post('/createsongs',controller.createSongs)
-router.delete('/deletesongs',controller.deleteSong)
-router.put('/updatesongs',controller.updateSongs)
+router.get('/',controller.getSongs)
+router.post('/',controller.createSongs)
+router.delete('/:id',controller.deleteSong)
+router.put('/:id',controller.updateSongs)
 
 
 

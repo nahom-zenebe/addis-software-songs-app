@@ -22,12 +22,12 @@ const songsSlice = createSlice({
     },
     fetchSongsSuccess(state, action) {
       state.status = 'succeeded';
-      state.items = action.payload.data || [];
+      state.items = action.payload || [];
       state.pagination = {
         ...state.pagination,
-        currentPage: action.payload.currentPage || 1,
-        totalPages: action.payload.totalPages || 1,
-        totalItems: action.payload.totalItems || 0,
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: (action.payload && action.payload.length) || 0,
       };
     },
     fetchSongsFailure(state, action) {
