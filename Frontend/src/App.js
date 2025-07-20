@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Navbar from './component/Navbar';
 import LoadingSpinner from './component/LoadingSpinner'; 
 import FavoriteSongsPage from './pages/FavoriteSongsPage';
 
@@ -14,7 +15,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 function App() {
   return (
     <Router>
-
+ <Navbar />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<WelcomePage />} />

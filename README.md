@@ -144,3 +144,24 @@ npx jest
 - `PORT`: The port the server runs on (default: 5002).
 
 ---
+    HomePage Tests:
+
+        Render with mock Redux store containing sample songs
+
+        Test search functionality
+
+        Test favorite toggle
+
+        Test navigation
+
+        Test empty state
+
+    PostSongs Tests:
+
+        Test form rendering
+
+        Test form validation
+
+        Test successful submission
+
+        Test navigation after submission

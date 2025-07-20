@@ -436,7 +436,7 @@ export const emptyState = (theme) => css`
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { items = [], status, error } = useSelector((state) => state.songs || {});
+  const { items = [], status, error, pagination } = useSelector((state) => state.songs || {});
   const navigate = useNavigate();
   const theme = useTheme();
   const [favorite,setfavorite]=useState(true)
@@ -520,6 +520,11 @@ const HomePage = () => {
     }
   };
 
+  // Pagination controls
+  const handlePageChange = (page) => {
+    dispatch({ type: 'songs/fetchSongsRequest', payload: { page, itemsPerPage: 4 } });
+  };
+
   if (status === 'loading') {
     return (
       <div css={container}>
@@ -570,6 +575,35 @@ const HomePage = () => {
 
           <button css={primaryButton}  onClick={() => navigate('/songs/favorite')}>
           <AiFillHeart/>Favorite
+          </button>
+        </div>
+
+        {/* Pagination Controls */}
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5rem 0' }}>
+          <button
+            css={primaryButton}
+            onClick={() => handlePageChange(Math.max(1, pagination.currentPage - 1))}
+            disabled={pagination.currentPage === 1}
+          >
+            Previous
+          </button>
+          {Array.from({ length: pagination.totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              css={primaryButton}
+              style={{ margin: '0 0.25rem', background: pagination.currentPage === i + 1 ? theme.colors.primaryDark : undefined }}
+              onClick={() => handlePageChange(i + 1)}
+              disabled={pagination.currentPage === i + 1}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            css={primaryButton}
+            onClick={() => handlePageChange(Math.min(pagination.totalPages, pagination.currentPage + 1))}
+            disabled={pagination.currentPage === pagination.totalPages}
+          >
+            Next
           </button>
         </div>
 

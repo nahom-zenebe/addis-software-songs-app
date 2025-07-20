@@ -3,7 +3,23 @@ const { toggleFavorite } = require('../models/songModel');
 
 
 exports.getSongs=(req,res)=>{
-    res.json(SongModel.getAllSongs());
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const allSongs = SongModel.getAllSongs();
+    const totalItems = allSongs.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startIdx = (page - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const items = allSongs.slice(startIdx, endIdx);
+    res.json({
+      items,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage
+      }
+    });
 }
 
 exports.createSongs=(req,res)=>{

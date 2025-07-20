@@ -6,7 +6,7 @@ const initialState = {
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
-    itemsPerPage: 10,
+    itemsPerPage: 4, // changed from 10 to 4
   },
   status: 'idle',
   error: null,
@@ -24,12 +24,10 @@ const songsSlice = createSlice({
   
     fetchSongsSuccess(state, action) {
       state.status = 'succeeded';
-      state.items = action.payload || [];
+      state.items = action.payload.items || [];
       state.pagination = {
         ...state.pagination,
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: (action.payload && action.payload.length) || 0,
+        ...action.payload.pagination,
       };
     },
     fetchSongsFailure(state, action) {

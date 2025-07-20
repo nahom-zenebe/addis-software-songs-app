@@ -36,14 +36,23 @@ const FavoriteSongsPage = () => {
   const { items = [], status, error } = useSelector((state) => state.songs || {});
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // Pagination for favorites (local)
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 4;
+  const favoriteItems = items.filter(song => song.favorite);
+  const totalPages = Math.ceil(favoriteItems.length / itemsPerPage);
+  const paginatedFavorites = favoriteItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  React.useEffect(() => {
     dispatch(fetchSongsRequest());
   }, [dispatch]);
 
-  const favoriteItems = items.filter(song => song.favorite);
-
   const handleToggleFavorite = (songId) => {
     dispatch(toggleFavoriteRequest(songId));
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (status === 'loading') {
@@ -82,8 +91,9 @@ const FavoriteSongsPage = () => {
           </button>
         </div>
       ) : (
+        <>
         <ul css={list}>
-          {favoriteItems.map((song) => (
+          {paginatedFavorites.map((song) => (
             <li key={song._id || song.id} css={card}>
               <div css={cardHeader}>
                 <div css={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -124,6 +134,35 @@ const FavoriteSongsPage = () => {
             </li>
           ))}
         </ul>
+        {/* Pagination Controls */}
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5rem 0' }}>
+          <button
+            css={primaryButton}
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              css={primaryButton}
+              style={{ margin: '0 0.25rem', background: currentPage === i + 1 ? theme.colors.primaryDark : undefined }}
+              onClick={() => handlePageChange(i + 1)}
+              disabled={currentPage === i + 1}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            css={primaryButton}
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        </>
       )}
     </div>
   );

@@ -18,9 +18,14 @@ import {
   toggleFavoriteFailure,
 } from './songsSlice';
 
-function* fetchSongsSaga() {
+function* fetchSongsSaga(action) {
   try {
-    const res = yield call(axios.get, `${process.env.REACT_APP_BACKEND_URL}/songs`);
+    const { page = 1, itemsPerPage = 4 } = action.payload || {};
+    const res = yield call(
+      axios.get,
+      `${process.env.REACT_APP_BACKEND_URL}/songs`,
+      { params: { page, itemsPerPage } }
+    );
     yield put(fetchSongsSuccess(res.data)); 
   } catch (error) {
     yield put(fetchSongsFailure(error.response?.data || error.message));
