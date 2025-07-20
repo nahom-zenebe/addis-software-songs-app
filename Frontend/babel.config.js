@@ -1,10 +1,10 @@
-
 module.exports = {
   presets: [
-    ['@babel/preset-env', { targets: { node: 'current' } }],
-    ['@babel/preset-react', {
+    '@babel/preset-env',
+    ['@babel/preset-react', { 
       runtime: 'automatic',
-      importSource: '@emotion/react'
+      importSource: '@emotion/react' 
     }]
-  ]
+  ],
+  plugins: ['@emotion/babel-plugin']
 };

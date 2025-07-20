@@ -1,167 +1,158 @@
-# Addis Software Songs App - Frontend
+# Addis Software Songs App
 
-## Setup Instructions
+A full-stack application to manage a list of songs, built for the Addis Software Test Project. The frontend is a React app (manual Webpack setup, no CRA) using Redux Toolkit, Redux-Saga, and Emotion. The backend is a simple Node/Express REST API.
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+---
 
-2. **Configure environment variables:**
-   - Create a `.env` file in the `Frontend/` directory:
-     ```env
-     REACT_APP_BACKEND_URL=http://localhost:5002
-     ```
-   - Make sure the backend server is running on the specified port (default: 5002).
+## Tech Stack
 
-3. **Start the development server:**
-   ```bash
-   npm start
-   ```
-   - The app will run at [http://localhost:3001](http://localhost:3001) by default.
+### Frontend
+- **ReactJS** (functional components)
+- **Redux Toolkit** & **Redux-Saga** (state management & side effects)
+- **Emotion** (theming, responsive styling)
+- **React Router v6** (routing)
+- **Jest** & **React Testing Library** (unit/component tests)
+- **Webpack** (manual config, no CRA)
+- **Other:** Axios, React-Icons, React-Toastify
 
-4. **Build for production:**
-   ```bash
-   npm run build
-   ```
+### Backend
+- **Node.js** & **Express**
+- **CORS** (for frontend-backend communication)
+- **dotenv** (environment variables)
 
-## Running Tests
+---
 
-This project uses **Jest** and **React Testing Library** for unit and component tests.
+## Folder Structure
 
-### Setup (if not already installed)
-
-Install the required dev dependencies:
-```bash
-npm install --save-dev jest babel-jest @babel/preset-env @babel/preset-react @testing-library/react @testing-library/jest-dom
+```
+addis-software-songs-app/
+├── Frontend/
+│   ├── src/
+│   │   ├── pages/           # Main page components (Homepage, FavoriteSongsPage, PostSongs, etc.)
+│   │   ├── component/       # Presentational components (Navbar, LoadingSpinner, theme.js)
+│   │   ├── features/        # Redux slices & sagas
+│   │   ├── setupTests.js    # Jest/RTL setup
+│   │   └── App.js, index.js # App entry
+│   ├── public/              # index.html, favicon
+│   ├── webpack.config.js    # Manual Webpack config
+│   └── package.json         # Frontend dependencies/scripts
+├── backend/
+│   ├── controller/          # songController.js
+│   ├── models/              # songModel.js
+│   ├── routes/              # songRoutes.js
+│   ├── index.js             # Express app entry
+│   └── package.json         # Backend dependencies/scripts
+└── README.md
 ```
 
-### Run all tests
-```bash
-npm test
+---
+
+## Core Requirements & How they implements
+
+- **Paginated list of songs:** Homepage displays paginated songs (title, artist, album, year, etc.)
+- **CRUD operations:** Create, Read, Update, Delete via API (see API docs below)
+- **React hooks:** Used throughout (useState, useEffect, useDispatch, useSelector)
+- **Redux Toolkit + Redux-Saga:** For global state and async API calls
+- **Emotion:** For theming and responsive styling
+- **Manual Webpack config:** No CRA, see `Frontend/webpack.config.js`
+- **Backend:** Node/Express REST API (see below)
+- **API endpoints documented:** See below for detail
+- **Testing:** Jest & React Testing Library see below
+
+---
+
+## API Endpoints (Backend)
+
+**Base URL:** `/songs`
+
+| Method | Endpoint            | Description                |
+|--------|---------------------|----------------------------|
+| GET    | `/songs`            | Get paginated list of songs (query: `page`, `itemsPerPage`) |
+| POST   | `/songs`            | Create a new song          |
+| PUT    | `/songs/:id`        | Update a song              |
+| DELETE | `/songs/:id`        | Delete a song              |
+| PUT    | `/songs/favorite/:id`| Toggle favorite status     |
+
+**Sample Song Fields:**
+- `id`, `title`, `artist`, `album`, `year`, `genre`, `duration`, `coverUrl`, `favorite`, `rating`, `playCount`, etc.
+
+**Pagination Response Example:**
+```json
+{
+  "items": [ { /* song objects */ } ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 3,
+    "totalItems": 12,
+    "itemsPerPage": 4
+  }
+}
 ```
-Or, if you want to run Jest directly:
-```bash
-npx jest
-```
 
-### Test files
-- Component and unit tests are located alongside their components, e.g.:
-  - `src/pages/Homepage.test.js`
-  - `src/pages/PostSongs.test.js`
-
-### Example
-- The `Homepage` test checks that the search bar and song list render, and that filtering works.
-- The `PostSongs` test checks that the form renders and accepts input.
-
-### Troubleshooting
-- If you see errors about `import` statements or JSX, make sure your `.babelrc` includes both `@babel/preset-env` and `@babel/preset-react`.
-- If you need a sample Jest config, add a `jest.config.js`:
-  ```js
-  module.exports = {
-    testEnvironment: 'jsdom',
-    transform: {
-      '^.+\\.(js|jsx)$': 'babel-jest',
-    },
-    moduleFileExtensions: ['js', 'jsx'],
-    setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
-  };
-  ```
+---
 
 ## Webpack Configuration
-- The app uses a custom `webpack.config.js` for development and production builds.
-- Key features:
-  - **Entry point:** `src/index.js`
-  - **Output:** Bundles to `dist/` with content hashes for cache busting.
-  - **Dev Server:**
-    - Runs on port 3001
-    - `historyApiFallback: true` for React Router support (enables client-side routing)
-    - Hot Module Replacement enabled
-  - **Loaders:**
-    - Babel for JS/JSX (with Emotion support)
-    - CSS and asset loaders for images
-  - **Plugins:**
-    - `HtmlWebpackPlugin` for HTML template
-    - `dotenv-webpack` for environment variables
-
-## AI Usage
-- **No AI is used in the runtime application.**
-- If you are reading this as part of a code review or project setup, AI (such as ChatGPT) may have been used to assist in code generation, refactoring, or documentation, but the deployed app itself does not use AI for its features.
-
-## Features
-- Song list with search, add, edit (modal), delete, and detail view
-- State management with Redux Toolkit and Redux Saga
-- Styling with Emotion
-- Routing with React Router v6
-- Toast notifications for user feedback
+- **Manual setup:** No Create React App (CRA)
+- **Entry:** `src/index.js`
+- **Output:** `dist/` with content hashes
+- **Dev Server:** Port 3001, HMR, historyApiFallback for React Router
+- **Custom rules:**
+  - **SVGs:** Inline as React components (with `@svgr/webpack`) or as assets
+  - **Images:** PNG/JPG/GIF/WebP handled as assets (output to `assets/images/`)
+  - **Fonts:** WOFF/WOFF2/TTF/OTF handled as assets
+- **Environment variables:** Loaded via `dotenv-webpack` (e.g., `REACT_APP_BACKEND_URL`)
+- **Code splitting:** Enabled via `optimization.splitChunks`
 
 ---
 
-# Addis Software Songs App - Backend
+## AI Usage & Verification
+- **AI tools (ChatGPT) were used** for:
+  - Enhancing Emotion styling and theme structure
+  - Suggesting error handling and some Redux patterns
+  - Generating test boilerplate for Jest/RTL
+- **Verification:**
+  - All code was manually reviewed and understood
+  - All features were tested in the browser
+  - Jest/RTL tests were written and all pass 
+
+---
+
+## Testing
+- **Tools:** Jest, React Testing Library
+- **Setup:** See `src/setupTests.js` (imports `@testing-library/jest-dom`)
+- **Coverage:**
+  - Homepage: Renders song list, toggles favorite
+  - FavoriteSongsPage: Filters favorites, toggles favorite
+- **How to run:**
+  ```bash
+  cd Frontend
+  npm test
+  ```
+
+---
 
 ## Setup Instructions
 
-1. **Install dependencies:**
-   ```bash
-   npm install
+### Frontend
+1. `cd Frontend`
+2. `npm install`
+3. Create `.env` with:
+   ```env
+   REACT_APP_BACKEND_URL=http://localhost:5000
    ```
+4. `npm start` (runs on http://localhost:3001)
 
-2. **Configure environment variables (optional):**
-   - By default, the backend runs on port 5002. You can set a custom port by creating a `.env` file:
-     ```env
-     PORT=5002
-     ```
-
-3. **Start the backend server:**
-   ```bash
-   npm start
+### Backend
+1. `cd backend`
+2. `npm install`
+3. (Optional) Create `.env` with:
+   ```env
+   PORT=5000
    ```
-   or
-   ```bash
-   node index.js
-   ```
-   - The server will run at [http://localhost:5002](http://localhost:5002) by default.
-
-## API Endpoints
-
-- **Base URL:** `/songs`
-
-| Method | Endpoint         | Description           |
-|--------|------------------|----------------------|
-| GET    | `/songs`         | Get all songs        |
-| POST   | `/songs`         | Create a new song    |
-| PUT    | `/songs/:id`     | Update a song        |
-| DELETE | `/songs/:id`     | Delete a song        |
-
-- All data is stored in-memory (see `models/songModel.js`).
-- Example song fields: `title`, `artist`, `album`, `year`, `genre`, `coverUrl`, etc.
-
-## CORS
-- CORS is enabled for `http://localhost:3001` and `http://localhost:3000` by default (see `index.js`).
-- If you need to allow other origins, update the `corsOptions` in `index.js`.
-
-## Environment Variables
-- `PORT`: The port the server runs on (default: 5002).
+4. `npm start` (runs on http://localhost:5000)
 
 ---
-    HomePage Tests:
 
-        Render with mock Redux store containing sample songs
-
-        Test search functionality
-
-        Test favorite toggle
-
-        Test navigation
-
-        Test empty state
-
-    PostSongs Tests:
-
-        Test form rendering
-
-        Test form validation
-
-        Test successful submission
-
-        Test navigation after submission
+## Notes
+- **No Create React App (CRA) used.**
+- **All requirements from the Addis Software Test Project are Implemented.**
