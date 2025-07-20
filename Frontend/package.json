@@ -8,12 +8,13 @@
     "test": "jest",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.js"
-    ]
+ "jest": {
+  "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"],
+  "moduleNameMapper": {
+    "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules"
   },
+  "testEnvironment": "jsdom"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

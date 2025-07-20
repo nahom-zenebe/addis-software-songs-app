@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
-import Homepage, { theme } from './Homepage';
+import FavoriteSongsPage from './FavoriteSongsPage';
+import { theme } from './Homepage';
 
 const mockStore = configureStore([]);
 
@@ -20,20 +21,20 @@ const initialState = {
   },
 };
 
-describe('Homepage', () => {
-  it('renders a list of songs', () => {
+describe('FavoriteSongsPage', () => {
+  it('renders only favorite songs', () => {
     const store = mockStore(initialState);
     render(
       <Provider store={store}>
         <MemoryRouter>
           <ThemeProvider theme={theme}>
-            <Homepage />
+            <FavoriteSongsPage />
           </ThemeProvider>
         </MemoryRouter>
       </Provider>
     );
-    expect(screen.getByText('Song 1')).toBeInTheDocument();
     expect(screen.getByText('Song 2')).toBeInTheDocument();
+    expect(screen.queryByText('Song 1')).not.toBeInTheDocument();
   });
 
   it('toggles favorite status when heart icon is clicked', () => {
@@ -42,7 +43,7 @@ describe('Homepage', () => {
       <Provider store={store}>
         <MemoryRouter>
           <ThemeProvider theme={theme}>
-            <Homepage />
+            <FavoriteSongsPage />
           </ThemeProvider>
         </MemoryRouter>
       </Provider>

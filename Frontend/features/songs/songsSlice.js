@@ -69,7 +69,7 @@ const songsSlice = createSlice({
         song => song._id === action.payload._id || song.id === action.payload.id
       );
       if (song) {
-        song.favorite = !song.favorite;
+        song.favorite = action.payload.favorite;
       }
     },
     toggleFavoriteFailure(state, action) {
