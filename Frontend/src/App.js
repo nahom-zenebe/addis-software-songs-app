@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingSpinner from './component/LoadingSpinner'; 
-
+import FavoriteSongsPage from './pages/FavoriteSongsPage';
 
 const WelcomePage = lazy(() => import('./pages/Welcomepage'));
 const HomePage = lazy(() => import('./pages/Homepage'));
@@ -20,8 +20,10 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/songs" element={<HomePage />} />
           <Route path="/songs/create" element={<PostSongs />} />
+          <Route path="/songs/favorite" element={<FavoriteSongsPage />} />
           <Route path="/songs/:id" element={<DetailPage />} />
           <Route path="/songs/:id/edit" element={<PostSongs />} />
+         
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

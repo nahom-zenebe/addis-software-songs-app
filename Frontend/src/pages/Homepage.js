@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSongsRequest, deleteSongRequest, updateSongRequest } from '../../features/songs/songsSlice';
+import { fetchSongsRequest, deleteSongRequest, updateSongRequest,   toggleFavoriteRequest  } from '../../features/songs/songsSlice';
 import { css, keyframes, useTheme } from '@emotion/react';
 import { 
   FaEye, FaEdit, FaTrash, FaPlus, FaSearch, 
   FaMusic, FaUser, FaCompactDisc, FaCalendarAlt,
-  FaHeadphones, FaImage, FaTimes, FaSave
+  FaHeadphones, FaImage, FaTimes, FaSave,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import {AiFillHeart,AiOutlineHeart} from 'react-icons/ai';
 // Theme definition
-const theme = {
+export const  theme = {
   colors: {
     primary: '#6366f1',
     primaryDark: '#4f46e5',
@@ -68,7 +68,7 @@ const globalStyles = css`
   }
 `;
 
-const container = css`
+export const container = css`
   max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
@@ -82,7 +82,7 @@ const container = css`
   }
 `;
 
-const heading = css`
+export const  heading = css`
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -99,7 +99,7 @@ const heading = css`
   }
 `;
 
-const searchContainer = css`
+export const  searchContainer = css`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -112,7 +112,7 @@ const searchContainer = css`
   }
 `;
 
-const searchInput = (theme) => css`
+export const  searchInput = (theme) => css`
   flex-grow: 1;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   border-radius: ${theme.radii.md};
@@ -137,7 +137,7 @@ const searchInput = (theme) => css`
   }
 `;
 
-const list = css`
+export const  list = css`
   list-style-type: none;
   padding: 0;
   display: grid;
@@ -148,7 +148,7 @@ const list = css`
   }
 `;
 
-const card = (theme) => css`
+export const  card = (theme) => css`
   background: #fff;
   padding: 1.25rem;
   border-radius: ${theme.radii.md};
@@ -165,14 +165,14 @@ const card = (theme) => css`
   }
 `;
 
-const cardHeader = css`
+export const  cardHeader = css`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 0.75rem;
 `;
 
-const songTitle = (theme) => css`
+export const  songTitle = (theme) => css`
   font-size: 1.25rem;
   font-weight: 600;
   color: ${theme.colors.dark};
@@ -183,20 +183,20 @@ const songTitle = (theme) => css`
   overflow: hidden;
 `;
 
-const songDetails = (theme) => css`
+export const  songDetails = (theme) => css`
   color: ${theme.colors.gray};
   font-size: 0.875rem;
   display: grid;
   gap: 0.5rem;
 `;
 
-const detailItem = css`
+export const  detailItem = css`
   display: flex;
   align-items: center;
   gap: 0.5rem;
 `;
 
-const actions = css`
+export const  actions = css`
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
@@ -204,7 +204,7 @@ const actions = css`
   border-top: 1px dashed #e2e8f0;
 `;
 
-const actionButton = (theme, variant = 'primary') => css`
+export const  actionButton = (theme, variant = 'primary') => css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -229,7 +229,7 @@ const actionButton = (theme, variant = 'primary') => css`
   }
 `;
 
-const primaryButton = (theme) => css`
+export const  primaryButton = (theme) => css`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -255,12 +255,12 @@ const primaryButton = (theme) => css`
   }
 `;
 
-const spin = keyframes`
+export const  spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 `;
 
-const spinner = css`
+export const  spinner = css`
   margin: 40px auto;
   border: 4px solid rgba(99, 102, 241, 0.1);
   border-top: 4px solid ${theme.colors.primary};
@@ -270,7 +270,7 @@ const spinner = css`
   animation: ${spin} 1s linear infinite;
 `;
 
-const statusMessage = (theme) => css`
+export const  statusMessage = (theme) => css`
   text-align: center;
   font-size: 1.1rem;
   color: ${theme.colors.gray};
@@ -280,7 +280,7 @@ const statusMessage = (theme) => css`
   border-radius: ${theme.radii.md};
 `;
 
-const modalOverlay = css`
+export const  modalOverlay = css`
   position: fixed;
   top: 0;
   left: 0;
@@ -294,7 +294,7 @@ const modalOverlay = css`
   backdrop-filter: blur(4px);
 `;
 
-const modalContent = (theme) => css`
+export const  modalContent = (theme) => css`
   background: #fff;
   padding: 2rem;
   border-radius: ${theme.radii.lg};
@@ -311,14 +311,14 @@ const modalContent = (theme) => css`
   }
 `;
 
-const modalHeader = css`
+export const  modalHeader = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 `;
 
-const modalTitle = css`
+export const  modalTitle = css`
   font-size: 1.5rem;
   font-weight: 600;
   color: ${theme.colors.primaryDark};
@@ -327,7 +327,7 @@ const modalTitle = css`
   gap: 0.5rem;
 `;
 
-const closeButton = (theme) => css`
+export const  closeButton = (theme) => css`
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -340,11 +340,11 @@ const closeButton = (theme) => css`
   }
 `;
 
-const formGroup = css`
+export const  formGroup = css`
   margin-bottom: 1rem;
 `;
 
-const formLabel = (theme) => css`
+export const  formLabel = (theme) => css`
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -354,7 +354,7 @@ const formLabel = (theme) => css`
   gap: 0.5rem;
 `;
 
-const formInput = (theme) => css`
+export const  formInput = (theme) => css`
   width: 100%;
   padding: 0.75rem;
   border: 1px solid ${theme.colors.lightGray};
@@ -369,14 +369,14 @@ const formInput = (theme) => css`
   }
 `;
 
-const formActions = css`
+export const formActions = css`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
 `;
 
-const submitButton = (theme) => css`
+export const  submitButton = (theme) => css`
   padding: 0.75rem 1.5rem;
   background-color: ${theme.colors.primary};
   color: white;
@@ -394,7 +394,7 @@ const submitButton = (theme) => css`
   }
 `;
 
-const cancelButton = (theme) => css`
+export const  cancelButton = (theme) => css`
   padding: 0.75rem 1.5rem;
   background-color: ${theme.colors.lightGray};
   color: ${theme.colors.dark};
@@ -409,7 +409,7 @@ const cancelButton = (theme) => css`
   }
 `;
 
-const emptyState = (theme) => css`
+export const emptyState = (theme) => css`
   text-align: center;
   padding: 3rem;
   background-color: ${theme.colors.light};
@@ -439,7 +439,7 @@ const HomePage = () => {
   const { items = [], status, error } = useSelector((state) => state.songs || {});
   const navigate = useNavigate();
   const theme = useTheme();
-
+  const [favorite,setfavorite]=useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editSong, setEditSong] = useState(null);
   const [editForm, setEditForm] = useState({ 
@@ -448,14 +448,19 @@ const HomePage = () => {
     album: '', 
     year: '', 
     genre: '', 
-    coverUrl: '' 
+    duration:'',
+
   });
   const [search, setSearch] = useState("");
+  
 
   useEffect(() => {
     dispatch(fetchSongsRequest());
   }, [dispatch]);
-
+  
+  const handleToggleFavorite = (songId) => {
+    dispatch(toggleFavoriteRequest(songId));
+  };
   const filteredItems = items.filter(song => {
     const q = search.toLowerCase();
     return (
@@ -473,7 +478,8 @@ const HomePage = () => {
       album: song.album || '',
       year: song.year || '',
       genre: song.genre || '',
-      coverUrl: song.coverUrl || '',
+     duration:song.duration||'',
+    
     });
     setIsModalOpen(true);
   };
@@ -561,6 +567,10 @@ const HomePage = () => {
           <button css={primaryButton} onClick={() => navigate('/songs/create')}>
             <FaPlus /> Add New Song
           </button>
+
+          <button css={primaryButton}  onClick={() => navigate('/songs/favorite')}>
+          <AiFillHeart/>Favorite
+          </button>
         </div>
 
         {isModalOpen && (
@@ -622,10 +632,10 @@ const HomePage = () => {
                   />
                 </div>
                 <div css={formGroup}>
-                  <label css={formLabel}><FaImage /> Cover URL</label>
+                  <label css={formLabel}><FaImage /> duration</label>
                   <input 
-                    name="coverUrl" 
-                    value={editForm.coverUrl} 
+                    name="duration" 
+                    value={editForm.duration} 
                     onChange={handleEditFormChange} 
                     css={formInput} 
                   />
@@ -657,13 +667,33 @@ const HomePage = () => {
             {filteredItems.map((song) => (
               <li key={song._id || song.id} css={card}>
                 <div css={cardHeader}>
+                  <div  css={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <h3 css={songTitle}>{song.title}</h3>
+                  <button 
+  onClick={() => handleToggleFavorite(song._id || song.id)}
+  css={css`
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: ${song.favorite ? theme.colors.danger : theme.colors.gray};
+    font-size: 1.25rem;
+    transition: all 0.2s;
+    &:hover {
+      transform: scale(1.1);
+    }
+  `}
+>
+  {song.favorite ? <AiFillHeart /> : <AiOutlineHeart />}
+</button>
+                  </div>
+                
                 </div>
                 <div css={songDetails}>
                   <div css={detailItem}><FaUser /> {song.artist || 'Unknown Artist'}</div>
                   <div css={detailItem}><FaCompactDisc /> {song.album || 'No Album'}</div>
                   {song.year && <div css={detailItem}><FaCalendarAlt /> {song.year}</div>}
                   {song.genre && <div css={detailItem}><FaHeadphones /> {song.genre}</div>}
+                  <div css={detailItem}><FaCompactDisc /> {song.duration+ "min" || 'No duration'}</div>
                 </div>
                 <div css={actions}>
                   <button 

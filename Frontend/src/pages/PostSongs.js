@@ -379,7 +379,7 @@ const PostSongs = () => {
     album: '',
     year: '',
     genre: '',
-    coverUrl: ''
+    duration:''
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -415,7 +415,7 @@ const PostSongs = () => {
         album: '',
         year: '',
         genre: '',
-        coverUrl: ''
+        duration:''
       });
       navigator('/songs')
     } catch (error) {
@@ -567,8 +567,8 @@ const PostSongs = () => {
           </div>
 
           <div css={InputGroup}>
-            <label css={Label} htmlFor="coverUrl">
-              <FaImage /> Cover Art URL
+            <label css={Label} htmlFor="duration">
+              <FaImage /> duration length
             </label>
             <div css={InputWrapper}>
               <span css={InputIcon}>
@@ -576,12 +576,12 @@ const PostSongs = () => {
               </span>
               <input
                 css={InputStyle}
-                type="url" 
-                id="coverUrl" 
-                name="coverUrl" 
-                value={formData.coverUrl} 
+
+                id="duration" 
+                name="duration" 
+                value={formData.duration} 
                 onChange={handleChange} 
-                placeholder="https://example.com/album-cover.jpg"
+                placeholder="200"
               />
             </div>
           </div>

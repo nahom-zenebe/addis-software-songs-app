@@ -1,5 +1,5 @@
 const SongModel=require('../models/songModel')
-
+const { toggleFavorite } = require('../models/songModel');
 
 
 exports.getSongs=(req,res)=>{
@@ -12,11 +12,31 @@ exports.createSongs=(req,res)=>{
 }
 
 
+exports.togglesongs = async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updatedSong = toggleFavorite(id);
+  
+      if (!updatedSong) {
+        return res.status(404).json({ message: "Song not found" });
+      }
+  
+      return res.status(200).json({
+        message: "Favorite status toggled successfully",
+        song: updatedSong
+      });
+    } catch (error) {
+      console.error("Toggle favorite error:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+
 exports.updateSongs=(req,res)=>{
     const id = parseInt(req.params.id);
-   SongModel.updateSong(id,req.body)
-   res.json({ message: "Song updated" });
-
+    SongModel.updateSong(id,req.body)
+    const updatedSong = SongModel.getSongById(id);
+    res.json(updatedSong);
 }
 
 exports.deleteSong=(req,res)=>{

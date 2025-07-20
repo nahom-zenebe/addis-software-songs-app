@@ -16,10 +16,12 @@ const songsSlice = createSlice({
   name: 'songs',
   initialState,
   reducers: {
+    
     fetchSongsRequest(state) {
       state.status = 'loading';
       state.error = null;
     },
+  
     fetchSongsSuccess(state, action) {
       state.status = 'succeeded';
       state.items = action.payload || [];
@@ -63,6 +65,18 @@ const songsSlice = createSlice({
     deleteSongFailure(state, action) {
       state.error = action.payload;
     },
+    toggleFavoriteRequest() {},
+    toggleFavoriteSuccess(state, action) {
+      const song = state.items.find(
+        song => song._id === action.payload._id || song.id === action.payload.id
+      );
+      if (song) {
+        song.favorite = !song.favorite;
+      }
+    },
+    toggleFavoriteFailure(state, action) {
+      state.error = action.payload;
+    },
 
     setPagination(state, action) {
       state.pagination = {
@@ -93,9 +107,14 @@ export const {
   deleteSongRequest,
   deleteSongSuccess,
   deleteSongFailure,
+  toggleFavoriteRequest,
+  toggleFavoriteSuccess,
+  toggleFavoriteFailure,
 
   setPagination,
   resetSongsState,
+
+
 } = songsSlice.actions;
 
 export default songsSlice.reducer;

@@ -13,6 +13,9 @@ import {
   deleteSongRequest,
   deleteSongSuccess,
   deleteSongFailure,
+  toggleFavoriteSuccess,
+  toggleFavoriteRequest ,
+  toggleFavoriteFailure,
 } from './songsSlice';
 
 function* fetchSongsSaga() {
@@ -65,9 +68,23 @@ function* deleteSongSaga(action) {
   }
 }
 
+function* toggleFavoriteSaga(action) {
+  try {
+    const id = action.payload;
+    const res = yield call(
+      axios.get,
+      `${process.env.REACT_APP_BACKEND_URL}/songs/favorite/${id}`
+    );
+    yield put(toggleFavoriteSuccess(res.data.song)); 
+  } catch (error) {
+    yield put(toggleFavoriteFailure(error.response?.data || error.message));
+  }
+}
+
 export function* songSaga() {
   yield takeLatest(fetchSongsRequest.type, fetchSongsSaga);
   yield takeLatest(createSongRequest.type, createSongSaga);
   yield takeLatest(updateSongRequest.type, updateSongSaga);
   yield takeLatest(deleteSongRequest.type, deleteSongSaga);
+  yield takeLatest(toggleFavoriteRequest.type, toggleFavoriteSaga);
 }

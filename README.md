@@ -1,5 +1,5 @@
-
 # Addis Software Songs App - Frontend
+
 ## Setup Instructions
 
 1. **Install dependencies:**
@@ -24,6 +24,49 @@
    ```bash
    npm run build
    ```
+
+## Running Tests
+
+This project uses **Jest** and **React Testing Library** for unit and component tests.
+
+### Setup (if not already installed)
+
+Install the required dev dependencies:
+```bash
+npm install --save-dev jest babel-jest @babel/preset-env @babel/preset-react @testing-library/react @testing-library/jest-dom
+```
+
+### Run all tests
+```bash
+npm test
+```
+Or, if you want to run Jest directly:
+```bash
+npx jest
+```
+
+### Test files
+- Component and unit tests are located alongside their components, e.g.:
+  - `src/pages/Homepage.test.js`
+  - `src/pages/PostSongs.test.js`
+
+### Example
+- The `Homepage` test checks that the search bar and song list render, and that filtering works.
+- The `PostSongs` test checks that the form renders and accepts input.
+
+### Troubleshooting
+- If you see errors about `import` statements or JSX, make sure your `.babelrc` includes both `@babel/preset-env` and `@babel/preset-react`.
+- If you need a sample Jest config, add a `jest.config.js`:
+  ```js
+  module.exports = {
+    testEnvironment: 'jsdom',
+    transform: {
+      '^.+\\.(js|jsx)$': 'babel-jest',
+    },
+    moduleFileExtensions: ['js', 'jsx'],
+    setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+  };
+  ```
 
 ## Webpack Configuration
 - The app uses a custom `webpack.config.js` for development and production builds.
@@ -53,6 +96,7 @@
 - Toast notifications for user feedback
 
 ---
+
 # Addis Software Songs App - Backend
 
 ## Setup Instructions
