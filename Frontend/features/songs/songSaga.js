@@ -6,7 +6,7 @@ import {
   fetchSongsFailure,
   createSongRequest,
   createSongSuccess,
-  creaFailure,
+  createSongFailure,
   updateSongRequest,
   updateSongSuccess,
   updateSongFailure,
