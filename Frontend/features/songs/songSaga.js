@@ -77,7 +77,7 @@ function* toggleFavoriteSaga(action) {
   try {
     const id = action.payload;
     const res = yield call(
-      axios.get,
+      axios.put,
       `${process.env.REACT_APP_BACKEND_URL}/songs/favorite/${id}`
     );
     yield put(toggleFavoriteSuccess(res.data.song)); 

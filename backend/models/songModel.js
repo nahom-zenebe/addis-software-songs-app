@@ -65,7 +65,7 @@ const updateSong=(id,data)=>{
   songs = songs.map(song => song.id === id ? { ...song, ...data } : song);
 }
 const toggleFavorite = (id) => {
-  const song = songs.find(song => song.id === id);
+  const song = songs.find(song => Number(song.id) === Number(id));
   if (song) {
     song.favorite = !song.favorite;
     return song;

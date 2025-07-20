@@ -5,7 +5,7 @@ const controller = require("../controller/songController");
 
 
 router.get('/',controller.getSongs)
-router.get('/favorite/:id',controller.togglesongs)
+router.put('/favorite/:id',controller.togglesongs)
 router.post('/',controller.createSongs)
 router.delete('/:id',controller.deleteSong)
 router.put('/:id',controller.updateSongs)

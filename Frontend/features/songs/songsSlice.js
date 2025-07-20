@@ -66,7 +66,7 @@ const songsSlice = createSlice({
     toggleFavoriteRequest() {},
     toggleFavoriteSuccess(state, action) {
       const song = state.items.find(
-        song => song._id === action.payload._id || song.id === action.payload.id
+        song => String(song.id) === String(action.payload.id)
       );
       if (song) {
         song.favorite = action.payload.favorite;
