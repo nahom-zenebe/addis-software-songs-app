@@ -52,7 +52,7 @@ addis-software-songs-app/
 - **Paginated list of songs:** Homepage displays paginated songs (title, artist, album, year, etc.)
 - **CRUD operations:** Create, Read, Update, Delete via API (see API docs below)
 - **React hooks:** Used throughout (useState, useEffect, useDispatch, useSelector)
-- **Redux Toolkit + Redux-Saga:** For global state and async API calls
+- **Redux Toolkit + Redux-Saga:** For global state and async API calls//
 - **Emotion:** For theming and responsive styling
 - **Manual Webpack config:** No CRA, see `Frontend/webpack.config.js`
 - **Backend:** Node/Express REST API (see below)

@@ -1,12 +1,13 @@
 {
   "name": "addis-software-songs-app",
   "version": "1.0.0",
+  "description": "Full-stack songs app for the Addis Software test project.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --config webpack.config.js",
-    "build": "react-scripts build && npm run analyze",
+    "start": "webpack serve --config webpack.config.js --mode development",
+    "build": "webpack --config webpack.config.js --mode production",
     "test": "jest",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer dist/bundle.*.js"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -17,10 +18,21 @@
     },
     "testEnvironment": "jsdom"
   },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -56,6 +68,7 @@
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "redux-mock-store": "^1.5.5",
+    "source-map-explorer": "^2.5.5",
     "style-loader": "^4.0.0",
     "webpack": "^5.100.2",
     "webpack-cli": "^6.0.1",
