@@ -1,7 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
-
+require('dotenv').config();
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -37,7 +38,9 @@ module.exports = {
     ],
   },
   plugins: [
-
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_BACKEND_URL': JSON.stringify(process.env.REACT_APP_BACKEND_URL)
+    }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
