@@ -23,7 +23,7 @@ function* fetchSongsSaga(action) {
     const { page = 1, itemsPerPage = 4 } = action.payload || {};
     const res = yield call(
       axios.get,
-      `${process.env.REACT_APP_BACKEND_URL}/songs`,
+      `https://addis-software-songs-app.onrender.com/songs`,
       { params: { page, itemsPerPage } }
     );
     yield put(fetchSongsSuccess(res.data)); 
@@ -36,7 +36,7 @@ function* createSongSaga(action) {
   try {
     const res = yield call(
       axios.post,
-      `${process.env.REACT_APP_BACKEND_URL}/songs`,
+      `https://addis-software-songs-app.onrender.com/songs`,
       action.payload
     );
     const newSong = res.data[res.data.length - 1];
@@ -51,7 +51,7 @@ function* updateSongSaga(action) {
     const { id, songData } = action.payload;
     const res = yield call(
       axios.put,
-      `${process.env.REACT_APP_BACKEND_URL}/songs/${id}`,
+      `https://addis-software-songs-app.onrender.com/songs/${id}`,
       songData
     );
     yield put(updateSongSuccess(res.data));
@@ -65,7 +65,7 @@ function* deleteSongSaga(action) {
     const id = action.payload;
     yield call(
       axios.delete,
-      `${process.env.REACT_APP_BACKEND_URL}/songs/${id}`
+      `https://addis-software-songs-app.onrender.com/songs/${id}`
     );
     yield put(deleteSongSuccess(id));
   } catch (error) {
@@ -78,7 +78,7 @@ function* toggleFavoriteSaga(action) {
     const id = action.payload;
     const res = yield call(
       axios.put,
-      `${process.env.REACT_APP_BACKEND_URL}/songs/favorite/${id}`
+      `https://addis-software-songs-app.onrender.com/songs/favorite/${id}`
     );
     yield put(toggleFavoriteSuccess(res.data.song)); 
   } catch (error) {
