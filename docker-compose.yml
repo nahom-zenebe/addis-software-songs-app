@@ -1,0 +1,33 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always  # <--- Auto-restart
+
+  fontend:
+    build: ./Frontend
+    ports:
+      - '3001:80'
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: addis-software-songs-app-backend
+    ports:
+      - "5003:5003"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/songsdb
+    restart: always  # <--- Auto-restart
+
+volumes:
+  mongo_data:

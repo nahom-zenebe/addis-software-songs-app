@@ -7,6 +7,7 @@ import LoadingSpinner from './component/LoadingSpinner';
 import FavoriteSongsPage from './pages/FavoriteSongsPage';
 import SignupPage from './pages/signuppage'
 import LoginPage from './pages/loginpage'
+import Profilepage from './pages/Profilepage'
 const WelcomePage = lazy(() => import('./pages/Welcomepage'));
 const HomePage = lazy(() => import('./pages/Homepage'));
 const PostSongs = lazy(() => import('./pages/PostSongs'));
@@ -20,6 +21,7 @@ function App() {
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<WelcomePage />} />
+          <Route path="/Profilepage" element={<Profilepage/>}/>
           <Route path="/songs" element={<HomePage />} />
           <Route path="/songs/create" element={<PostSongs />} />
           <Route path="/songs/favorite" element={<FavoriteSongsPage />} />
