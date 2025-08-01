@@ -698,7 +698,7 @@ const HomePage = () => {
           </div>
         ) : (
           <ul css={list}>
-            {filteredItems.map((song) => (
+            {filteredItems?.map((song) => (
               <li key={song._id || song.id} css={card}>
                 <div css={cardHeader}>
                   <div  css={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -723,8 +723,8 @@ const HomePage = () => {
                 
                 </div>
                 <div css={songDetails}>
-                  <div css={detailItem}><FaUser /> {song.artist || 'Unknown Artist'}</div>
-                  <div css={detailItem}><FaCompactDisc /> {song.album || 'No Album'}</div>
+                  <div css={detailItem}><FaUser /> {song?.artist || 'Unknown Artist'}</div>
+   
                   {song.year && <div css={detailItem}><FaCalendarAlt /> {song.year}</div>}
                   {song.genre && <div css={detailItem}><FaHeadphones /> {song.genre}</div>}
                   <div css={detailItem}><FaCompactDisc /> {song.duration+ "min" || 'No duration'}</div>

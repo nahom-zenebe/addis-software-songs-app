@@ -30,7 +30,14 @@ exports.getSongs = async (req, res) => {
 
 exports.createSongs = async (req, res) => {
   try {
-    const song = new SongModel(req.body);
+
+    const {title, artist,year,genre, duration,coverUrl,trackNumber, composer, releaseDate,  playCount}=req.body;
+    if(!title||!artist||!year||!genre||! duration||!coverUrl||!trackNumber||! composer){
+      res.status(400).json("all information should be correct fill")
+    }
+    const song = new SongModel({
+      title, artist,year,genre, duration,coverUrl,trackNumber, composer, releaseDate,  playCount
+    });
     const savedSong = await song.save();
     res.status(201).json(savedSong);
   } catch (error) {

@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const songSchema = new mongoose.Schema({
   title: { type: String, required: true },
   artist: { type: String, required: true },
-  album: { type: mongoose.Schema.Types.ObjectId, ref: "Album", required: true },
   year: { type: Number },
   genre: { type: String },
   duration: { type: Number }, 
@@ -11,7 +10,7 @@ const songSchema = new mongoose.Schema({
   trackNumber: { type: Number },
   composer: { type: String },
   releaseDate: { type: Date },
-  lyrics: { type: String },
+  releaseDate: { type: String },
   favorite: { type: Boolean, default: false },
   rating: { type: Number, min: 0, max: 5 },
   playCount: { type: Number, default: 0 }
