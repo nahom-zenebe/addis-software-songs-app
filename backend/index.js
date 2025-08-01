@@ -10,11 +10,11 @@ const PORT = process.env.PORT || 5002;
 const connectDB = require("./lib/dbconnect");
 const cookieParser = require("cookie-parser");
 const corsOptions = {
-    origin: [process.env.Frontend_Url], 
+    origin: ["http://localhost:3001"], 
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true 
   };
-  app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -23,11 +23,8 @@ app.use("/auth",  userRoutes);
 app.use("/Review", ReviewRoutes);
 app.use("/Album", AlbumRoutes);
 
-app.listen(PORT, () => {
-  
-  connectDB().then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 });

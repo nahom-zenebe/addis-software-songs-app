@@ -1,7 +1,7 @@
 const User = require("../models/usermodel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config()
 // Helper function to create JWT
 const createToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -33,9 +33,11 @@ exports.signup = async (req, res) => {
     // 6️⃣ Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
+      secure: false, // dev
+      sameSite: "lax", // dev
+      maxAge: 24 * 60 * 60 * 1000
     });
+    
 
     res.status(201).json({ message: "Signup successful", user: { id: user._id, name: user.name, email: user.email } });
 
@@ -68,8 +70,8 @@ exports.login = async (req, res) => {
     // 5️⃣ Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false, // dev
+      sameSite: "lax", // dev
       maxAge: 24 * 60 * 60 * 1000
     });
 
@@ -85,7 +87,7 @@ exports.logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict"
+sameSite: "lax"
   });
   res.json({ message: "Logout successful" });
 };

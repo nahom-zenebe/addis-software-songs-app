@@ -26,7 +26,11 @@ function* fetchUserSaga() {
 // Login
 function* loginSaga(action) {
   try {
-    const res = yield call(axios.post, `${process.env.REACT_APP_BACKEND_URL}/auth/login`, action.payload);
+    const res = yield call(axios.post, 
+      `${process.env.REACT_APP_BACKEND_URL}/auth/login`, 
+      action.payload, 
+      { withCredentials: true }
+    );
     yield put(loginSuccess(res.data.user));
   } catch (error) {
     yield put(loginFailure(error.response?.data || error.message));
@@ -36,7 +40,11 @@ function* loginSaga(action) {
 // Signup
 function* signupSaga(action) {
   try {
-    const res = yield call(axios.post, `${process.env.REACT_APP_BACKEND_URL}/auth/signup`, action.payload);
+    const res = yield call(axios.post, 
+      `${process.env.REACT_APP_BACKEND_URL}/auth/signup`, 
+      action.payload, 
+      { withCredentials: true } 
+    );
     yield put(signupSuccess(res.data.user));
   } catch (error) {
     yield put(signupFailure(error.response?.data || error.message));
@@ -46,7 +54,7 @@ function* signupSaga(action) {
 // Logout
 function* logoutSaga() {
   try {
-    yield call(axios.post, `${process.env.REACT_APP_BACKEND_URL}/auth/logout`);
+    yield call(axios.post, `${process.env.REACT_APP_BACKEND_URL}/auth/logout`, { withCredentials: true });
     // no payload needed here, clear user state in reducer
   } catch (error) {
     // optionally handle error
