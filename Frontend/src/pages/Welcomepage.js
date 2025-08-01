@@ -189,7 +189,7 @@ const WelcomePage = () => {
   }, []);
 
   const handleClick = () => {
-    navigate('/songs');
+    navigate('/signuppage');
   };
 
   return (
@@ -230,6 +230,7 @@ const WelcomePage = () => {
           <TileText>
             Connect with popular music platforms and sync your existing playlists.
           </TileText>
+        
         </Tile>
         <Tile delay="0.6s">
           <TileIcon><FaItunesNote /></TileIcon>

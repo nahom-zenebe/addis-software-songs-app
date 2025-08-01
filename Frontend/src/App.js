@@ -5,7 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './component/Navbar';
 import LoadingSpinner from './component/LoadingSpinner'; 
 import FavoriteSongsPage from './pages/FavoriteSongsPage';
-
+import SignupPage from './pages/signuppage'
+import LoginPage from './pages/loginpage'
 const WelcomePage = lazy(() => import('./pages/Welcomepage'));
 const HomePage = lazy(() => import('./pages/Homepage'));
 const PostSongs = lazy(() => import('./pages/PostSongs'));
@@ -24,6 +25,8 @@ function App() {
           <Route path="/songs/favorite" element={<FavoriteSongsPage />} />
           <Route path="/songs/:id" element={<DetailPage />} />
           <Route path="/songs/:id/edit" element={<PostSongs />} />
+          <Route path="/signuppage" element={<SignupPage />} />
+          <Route path="/loginpage" element={<LoginPage/>} />
          
           <Route path="*" element={<NotFound />} />
         </Routes>
